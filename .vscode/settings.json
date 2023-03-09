@@ -1,0 +1,25 @@
+{
+    "qtConfigure.qtKitDir": "f:/Qt/6.4.2/mingw_64",
+    "files.associations": {
+        "*.json.liquid": "json",
+        "*.yaml.liquid": "yaml",
+        "*.md.liquid": "markdown",
+        "*.js.liquid": "liquid-javascript",
+        "*.css.liquid": "liquid-css",
+        "*.scss.liquid": "liquid-scss",
+        "new": "cpp",
+        "qwidget": "cpp",
+        "random": "cpp",
+        "qapplication": "cpp",
+        "qtwidgets": "cpp",
+        "qpushbutton": "cpp"
+    },
+    "files.exclude": {
+        "**/.DS_Store": true,
+        "**/.hg": true,
+        "**/.svn": true,
+        "**/CVS": true,
+        "**/Thumbs.db": true
+    },
+    "explorerExclude.backup": {}
+}
