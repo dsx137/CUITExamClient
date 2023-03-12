@@ -12,11 +12,11 @@
             "environment": [
                 {
                     "name": "PATH",
-                    "value": "f:/Qt/6.4.2/mingw_64/bin"
+                    "value": "${env:Qt}/6.4.2/mingw_64/bin"
                 }
             ],
             "externalConsole": false,
-            "miDebuggerPath": "F:/Qt/Tools/mingw1120_64/bin/gdb.exe",
+            "miDebuggerPath": "${env:Qt}/Tools/mingw1120_64/bin/gdb.exe",
             "visualizerFile": "c:\\Users\\Administrator\\AppData\\Roaming\\Code\\User\\workspaceStorage\\f0f013782fb0898cd2b849ca5bfe0f05\\tonka3000.qtvsctools\\qt.natvis.xml"
         }
     ]
