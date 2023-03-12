@@ -1,5 +1,5 @@
 {
-    "qtConfigure.qtKitDir": "f:/Qt/6.4.2/mingw_64",
+    "qtConfigure.qtKitDir": "${env:Qt}/6.4.2/mingw_64",
     "files.associations": {
         "*.json.liquid": "json",
         "*.yaml.liquid": "yaml",

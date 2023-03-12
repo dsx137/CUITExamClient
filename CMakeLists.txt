@@ -24,7 +24,7 @@ add_executable(${PROJECT_NAME}
 ) 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets) # Qt5 Shared Library
 
-set_target_properties(exam_cuit PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     WIN32_EXECUTABLE ON
     MACOSX_BUNDLE ON
 )
