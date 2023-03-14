@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.5) # CMake install : https://cmake.org/download/
 project(exam_cuit LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_PREFIX_PATH "$ENV{Qt}/6.4.2/mingw_64") # Qt Kit Dir
+# set(CMAKE_PREFIX_PATH "$ENV{Qt}/6.4.2/mingw_64") # Qt mingw Kit Dir
+set(CMAKE_PREFIX_PATH "$ENV{Qt}/6.4.2/msvc2019_64") # Qt msvc Kit Dir
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -10,7 +11,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets) # Qt COMPONENTS
+find_package(Qt6 COMPONENTS Widgets WebEngineWidgets REQUIRED) # Qt COMPONENTS
+
 aux_source_directory(./src srcs)
 qt_standard_project_setup()
 
@@ -22,7 +24,7 @@ add_executable(${PROJECT_NAME}
     WIN32 # If you need a terminal for debug, please comment this statement 
     ${srcs} 
 ) 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets) # Qt5 Shared Library
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets Qt6::WebEngineWidgets) # 用了什么额外的lib就要在这里写
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     WIN32_EXECUTABLE ON
