@@ -1,6 +1,6 @@
-#include <QPushButton.h>
+#pragma once
+#include "include.h"
 
-// using namespace FW;
 class tButton:public QPushButton {
 public:
     tButton(QWidget* p = nullptr)
@@ -9,6 +9,7 @@ public:
 
 
     void testSlotFunc() {
-        setText("fuck");
+        // setText("fuck");
+        // .screenGrab();
     }
 };

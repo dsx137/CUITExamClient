@@ -15,7 +15,9 @@
         "qtwidgets": "cpp",
         "qpushbutton": "cpp",
         "qwebengineview": "cpp",
-        "qmainwindow": "cpp"
+        "qmainwindow": "cpp",
+        "qdatetime": "cpp",
+        "qnetworkrequest": "cpp"
     },
     "files.exclude": {
         "**/.DS_Store": true,
