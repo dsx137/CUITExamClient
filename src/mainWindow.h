@@ -1,10 +1,5 @@
 #pragma once
-#include <QtWidgets/QWidget>
-#include <QMainWindow>
-#include <QPushButton.h>
-#include <QWebEngineView>
-#include "abutton.h"
-
+#include "include.h"
 
 class FWindow:public QMainWindow {
 public:
@@ -19,6 +14,7 @@ public:
     ~FWindow();
     UI* getUI();
     void resizeEvent(QResizeEvent* event);
+    void screenGrab();
 private:
     UI* ui;
 };

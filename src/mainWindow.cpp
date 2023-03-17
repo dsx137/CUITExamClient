@@ -1,5 +1,4 @@
-#include "mainWindow.h"
-
+#include "include.h"
 
 //FWindow
 FWindow::FWindow(QWidget* p)
@@ -28,7 +27,31 @@ FWindow::UI::UI(QMainWindow* w) {
 
 void FWindow::resizeEvent(QResizeEvent* event)
 {
-    QMainWindow::resizeEvent(event); // 调用基类的方法
+    QMainWindow::resizeEvent(event);
     // ui->view->setGeometry(width() / 2, height() / 2, width() / 2, height() / 2); // 设置view的位置和大小
     ui->view->setFixedSize(width(), height());
 }
+
+void FWindow::screenGrab() {
+    QScreen* screen = QGuiApplication::primaryScreen();
+    if (!screen) {
+        qWarning() << "No screen found";
+        return;
+    }
+
+    // Grab the current screen image
+    QPixmap pixmap = screen->grabWindow(0);
+
+    QNetworkAccessManager* manager = new QNetworkAccessManager();
+    QNetworkRequest request(QUrl("http://localhost:8000"));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg");
+    QByteArray data;
+    QBuffer buffer(&data);
+    buffer.open(QIODevice::WriteOnly);
+    pixmap.save(&buffer, "JPG", 100);
+    pixmap.save("fuckyou.jpg", "JPG", 100);
+    buffer.close();
+    manager->post(request, data);
+
+}
+
