@@ -7,14 +7,14 @@ public:
     public:
         QWidget* mainwidget;
         QWebEngineView* view;
-        tButton* bt;
+        QLineEdit* lineEdit;
+        QPushButton* pushbt;
         UI(QMainWindow* w);
     };
     FWindow(QWidget* p = nullptr);
     ~FWindow();
     UI* getUI();
     void resizeEvent(QResizeEvent* event);
-    void screenGrab();
 private:
     UI* ui;
 };

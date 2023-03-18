@@ -7,10 +7,9 @@
 #include <QScreen>//
 #include <QPixmap>//
 #include <QDateTime>//
+#include <QTimer>//
+#include <QLineEdit>
 
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QBuffer>
-
-#include "abutton.h"
-#include "mainWindow.h"
