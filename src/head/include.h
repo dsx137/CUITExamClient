@@ -1,4 +1,5 @@
 #pragma once
+#include <QDebug>
 #include <QApplication>
 #include <QtWidgets/QWidget>
 #include <QMainWindow>
@@ -13,3 +14,4 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QBuffer>
+// #include <QWebEngineScript>

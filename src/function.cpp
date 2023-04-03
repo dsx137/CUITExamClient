@@ -16,7 +16,18 @@ void FUNC::screenGrab() {
     QByteArray data;
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
-    pixmap.save(&buffer, "JPG", 50);
+    pixmap.save(&buffer, "JPG", 10);
     buffer.close();
     manager->post(request, data);
+}
+
+void FUNC::setTokenListener(QWebEngineView* view) {
+    QObject::connect(view, &QWebEngineView::loadFinished, [=](bool ok) {
+        if (ok && view->url() == QUrl("http://162.14.117.85/index")) {
+            view->page()->runJavaScript("localStorage.getItem('CUITAccessToken')", [=](const QVariant& result) {
+                QString token = result.toString();
+                qDebug() << "Token: " << token;
+                });
+        }
+        });
 }

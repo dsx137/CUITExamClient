@@ -21,7 +21,9 @@ FWindow::UI::UI(QMainWindow* w) {
     w->resize(800, 600);
 
     view = new QWebEngineView(w);
-    view->load(QUrl("http://exam.cuit.edu.cn/"));
+    view->load(QUrl("http://162.14.117.85/login"));
+
+    FUNC::setTokenListener(view);
 
     lineEdit = new QLineEdit(w);
     lineEdit->resize(100, 100);
@@ -44,4 +46,3 @@ void FWindow::resizeEvent(QResizeEvent* event)
     ui->lineEdit->setFixedSize(width() - 50, 50);
     ui->pushbt->move(width() - 50, 0);
 }
-
