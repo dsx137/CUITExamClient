@@ -11,11 +11,6 @@ public:
     T* get() { return p; };
 
     QChain* setLayout(QLayout*) { p->setLayout(p);return this; };
-    QChain* updateGeometry() { p->updateGeometry();return this; };
-    QChain* setParent(QWidget* parent) { p->setParent(parent);return this; };
-    QChain* setParent(QWidget* parent, Qt::WindowFlags f) { p->setParent(parent, f);return this; };
-    QChain* scroll(int dx, int dy) { p->scroll(dx, dy);return this; };
-    QChain* scroll(int dx, int dy, const QRect&) { p->scroll(dx, dy);return this; };
     QChain* setText(const QString& text) { p->setText(text);return this; };
     QChain* addWidget(QWidget* widget) { p->addWidget(widget);return this; };
     QChain* addLayout(QLayout* layout) { p->addLayout(layout);return this; };
@@ -23,6 +18,8 @@ public:
     QChain* setFixedHeight(int h) { p->setFixedHeight(h);return this; };
     QChain* setFixedWidth(int w) { p->setFixedWidth(w);return this; };
     QChain* setStyleSheet(const QString& styleSheet) { p->setStyleSheet(styleSheet);return this; };
+    QChain* setReadOnly(bool ro) { p->setReadOnly(ro);return this; };
+    QChain* setFont(const QFont& font) { p->setFont(font);return this; };
 
     QChain* operator->() { return this; };
 
