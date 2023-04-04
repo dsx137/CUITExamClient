@@ -8,11 +8,12 @@ public:
         QMainWindow* w;
     public:
         QWidget* mainwidget;
-        QWebEngineView* view;
-        QLineEdit* lineEdit;
-        QPushButton* pushbtn;
+        QWebEngineView* webView;
+        QLineEdit* urlBar;
+        QPushButton* confirmURLButton;
         UI(QMainWindow* w);
-        QLayout* init();
+        void initLayout();
+        void initConnection();
     };
     FWindow(QWidget* p = nullptr);
     ~FWindow();

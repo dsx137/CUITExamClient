@@ -24,4 +24,5 @@
 
 //others
 #include <QDebug>
-#include <QDateTime>//
+#include <QDateTime>
+#include <QFont>

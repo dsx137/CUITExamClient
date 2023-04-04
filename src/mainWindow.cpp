@@ -1,4 +1,5 @@
 #include "head/cpphead.h"
+
 //FWindow
 FWindow::FWindow(QWidget* p)
     :QMainWindow(p)
@@ -17,57 +18,75 @@ FWindow::UI* FWindow::getUI() {
     return ui;
 }
 
+//------------------------------------------------------------
+
 //UI
 FWindow::UI::UI(QMainWindow* w)
     :QWidget(w)
     , w(w) {
-    setLayout(init());
+    initLayout();
+    initConnection();
 }
 
-QLayout* FWindow::UI::init() {
+void FWindow::UI::initLayout() {
 
-    view = new QWebEngineView;
-    view->load(QUrl("http://162.14.117.85/login"));
+    webView = new QWebEngineView;
+    webView->load(QUrl("http://162.14.117.85/login"));
 
-    FUNC::setTokenListener(view);
-
-    lineEdit = QChain(new QLineEdit)
+    urlBar = QChain(new QLineEdit)
         ->setFixedHeight(50)
         ->setStyleSheet("border: 1px solid gray;")
+        ->setReadOnly(true)
+        ->setFont(QFont("Microsoft YaHei", 20))
         ->get();
 
-    QObject::connect(view, &QWebEngineView::loadStarted, [=] {
-        lineEdit->setText(view->url().toString());
-        });
-
-    pushbtn = QChain(new QPushButton)
+    confirmURLButton = QChain(new QPushButton)
         ->setFixedSize(50, 50)
-        ->setText("confirm")
+        ->setText("Refresh")
         ->get();
 
-    QObject::connect(pushbtn, &QPushButton::clicked, [&] {
-        QString str = lineEdit->text();
-        view->load(QUrl(str));
+    setLayout(
+        QChain(new QVBoxLayout)
+        ->addLayout(
+            QChain(new QHBoxLayout)
+            ->addWidget(urlBar)
+            ->addWidget(confirmURLButton)
+            ->get()
+        )
+        ->addWidget(webView)
+        ->get()
+    );
+}
+
+void FWindow::UI::initConnection() {
+
+    //set urlBar text
+    QObject::connect(webView, &QWebEngineView::urlChanged, [=](const QUrl& url) {
+        urlBar->setText(url.toString());
         });
 
-    QHBoxLayout* hLayout = QChain(new QHBoxLayout)
-        ->addWidget(lineEdit)
-        ->addWidget(pushbtn)
-        ->get();
-    QVBoxLayout* vLayout = QChain(new QVBoxLayout)
-        ->addLayout(hLayout)
-        ->addWidget(view)
-        ->get();
+    //get token when loadFinished
+    QObject::connect(webView, &QWebEngineView::loadFinished, [=](bool ok) {
+        if (ok && webView->url() == QUrl("http://162.14.117.85/index")) {
+            webView->page()->runJavaScript("localStorage.getItem('CUITAccessToken')", [=](const QVariant& result) {
+                QString token = result.toString();
+                qDebug() << "Token: " << token;
+                });
+        }
+        });
 
-    return vLayout;
+    //load url when confirmURLButton clicked
+    QObject::connect(confirmURLButton, &QPushButton::clicked, [&] {
+        webView->load(QUrl(urlBar->text()));
+        });
 }
+
+//------------------------------------------------------------
+
+
+//event
 
 void FWindow::resizeEvent(QResizeEvent* event)
 {
     QMainWindow::resizeEvent(event);
-    // ui->view->setGeometry(width() / 2, height() / 2, width() / 2, height() / 2); // 设置view的位置和大小
-    // ui->view->setFixedSize(width(), height() - 50);
-    // ui->view->move(0, 50);
-    // ui->lineEdit->setFixedSize(width() - 50, 50);
-    // ui->pushbtn->move(width() - 50, 0);
 }
