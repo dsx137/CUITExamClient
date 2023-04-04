@@ -1,5 +1,6 @@
 #pragma once
-#include <QDebug>
+
+//component
 #include <QApplication>
 #include <QtWidgets/QWidget>
 #include <QMainWindow>
@@ -7,11 +8,19 @@
 #include <QWebEngineView>
 #include <QScreen>//
 #include <QPixmap>//
-#include <QDateTime>//
 #include <QTimer>//
 #include <QLineEdit>
 
+//layout
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
+//network
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QBuffer>
 // #include <QWebEngineScript>
+
+//others
+#include <QDebug>
+#include <QDateTime>//
