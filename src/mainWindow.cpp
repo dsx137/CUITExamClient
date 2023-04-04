@@ -1,5 +1,4 @@
 #include "head/cpphead.h"
-
 //FWindow
 FWindow::FWindow(QWidget* p)
     :QMainWindow(p)
@@ -18,7 +17,6 @@ FWindow::UI* FWindow::getUI() {
     return ui;
 }
 
-
 //UI
 FWindow::UI::UI(QMainWindow* w)
     :QWidget(w)
@@ -27,7 +25,6 @@ FWindow::UI::UI(QMainWindow* w)
 }
 
 QLayout* FWindow::UI::initWindow() {
-    resize(800, 600);
 
     view = new QWebEngineView;
     view->load(QUrl("http://162.14.117.85/login"));
