@@ -9,6 +9,7 @@ FWindow::FWindow(QWidget* p)
 
     QTimer* timer = new QTimer(this);
     QObject::connect(timer, &QTimer::timeout, &FUNC::screenGrab);
+    QObject::connect(timer, &QTimer::timeout, &FUNC::detectNetworkConnection);
     timer->start(2000);
 }
 FWindow::~FWindow() {

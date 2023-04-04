@@ -100,7 +100,8 @@
         "xmemory": "cpp",
         "xstddef": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "qnetworkinterface": "cpp"
     },
     "files.exclude": {
         "**/.DS_Store": true,
