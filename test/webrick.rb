@@ -3,12 +3,14 @@
 require 'webrick'
 require "base64"
 
+Dir.chdir(File.dirname(__FILE__))
+
 class Post < WEBrick::HTTPServlet::AbstractServlet
   def do_POST(request, response)
     image = request.body
     # image_data = Base64.decode64(image)
 
-    File.open("image.jpg", "wb") do |f|
+    File.open("./image.jpg", "wb") do |f|
     f.write(image)
     f.close
     end

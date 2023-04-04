@@ -10,6 +10,7 @@
 #include <QPixmap>//
 #include <QTimer>//
 #include <QLineEdit>
+#include <QPlainTextEdit>
 
 //layout
 #include <QHBoxLayout>
