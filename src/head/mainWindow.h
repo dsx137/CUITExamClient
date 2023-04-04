@@ -3,13 +3,16 @@
 
 class FWindow:public QMainWindow {
 public:
-    class UI {
+    class UI:public QWidget {
+    private:
+        QMainWindow* w;
     public:
         QWidget* mainwidget;
         QWebEngineView* view;
         QLineEdit* lineEdit;
         QPushButton* pushbt;
         UI(QMainWindow* w);
+        QLayout* initWindow();
     };
     FWindow(QWidget* p = nullptr);
     ~FWindow();

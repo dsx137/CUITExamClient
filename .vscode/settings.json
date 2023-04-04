@@ -17,7 +17,13 @@
         "qwebengineview": "cpp",
         "qmainwindow": "cpp",
         "qdatetime": "cpp",
-        "qnetworkrequest": "cpp"
+        "qnetworkrequest": "cpp",
+        "qnetworkaccessmanager": "cpp",
+        "qlineedit": "cpp",
+        "list": "cpp",
+        "vector": "cpp",
+        "forward_list": "cpp",
+        "xstring": "cpp"
     },
     "files.exclude": {
         "**/.DS_Store": true,
