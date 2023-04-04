@@ -17,12 +17,20 @@
 #include <QVBoxLayout>
 
 //network
+#include <QNetworkInterface>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QBuffer>
+#include <QTcpServer>
 // #include <QWebEngineScript>
 
 //others
 #include <QDebug>
 #include <QDateTime>
 #include <QFont>
+
+//thread
+#include <QProcess>
+#include <QThread>
+#include <QRunnable>
+#include <QThreadPool>
