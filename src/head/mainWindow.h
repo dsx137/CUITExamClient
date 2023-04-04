@@ -10,9 +10,9 @@ public:
         QWidget* mainwidget;
         QWebEngineView* view;
         QLineEdit* lineEdit;
-        QPushButton* pushbt;
+        QPushButton* pushbtn;
         UI(QMainWindow* w);
-        QLayout* initWindow();
+        QLayout* init();
     };
     FWindow(QWidget* p = nullptr);
     ~FWindow();

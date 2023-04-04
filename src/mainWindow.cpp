@@ -7,7 +7,7 @@ FWindow::FWindow(QWidget* p)
     setCentralWidget(ui);
 
     QTimer* timer = new QTimer(this);
-    QObject::connect(timer, &QTimer::timeout, [&] {FUNC::screenGrab();});
+    QObject::connect(timer, &QTimer::timeout, &FUNC::screenGrab);
     timer->start(2000);
 }
 FWindow::~FWindow() {
@@ -21,34 +21,44 @@ FWindow::UI* FWindow::getUI() {
 FWindow::UI::UI(QMainWindow* w)
     :QWidget(w)
     , w(w) {
-    setLayout(initWindow());
+    setLayout(init());
 }
 
-QLayout* FWindow::UI::initWindow() {
+QLayout* FWindow::UI::init() {
 
     view = new QWebEngineView;
     view->load(QUrl("http://162.14.117.85/login"));
 
     FUNC::setTokenListener(view);
 
-    lineEdit = new QLineEdit;
-    lineEdit->setFixedHeight(50);
+    lineEdit = QChain(new QLineEdit)
+        ->setFixedHeight(50)
+        ->setStyleSheet("border: 1px solid gray;")
+        ->get();
 
-    pushbt = new QPushButton;
-    pushbt->setFixedSize(50, 50);
-    pushbt->setText("confirm");
+    QObject::connect(view, &QWebEngineView::loadStarted, [=] {
+        lineEdit->setText(view->url().toString());
+        });
 
-    QObject::connect(pushbt, &QPushButton::clicked, [&] {
+    pushbtn = QChain(new QPushButton)
+        ->setFixedSize(50, 50)
+        ->setText("confirm")
+        ->get();
+
+    QObject::connect(pushbtn, &QPushButton::clicked, [&] {
         QString str = lineEdit->text();
         view->load(QUrl(str));
         });
 
-    QHBoxLayout* hLayout = new QHBoxLayout;
-    QVBoxLayout* vLayout = new QVBoxLayout;
-    hLayout->addWidget(lineEdit);
-    hLayout->addWidget(pushbt);
-    vLayout->addLayout(hLayout);
-    vLayout->addWidget(view);
+    QHBoxLayout* hLayout = QChain(new QHBoxLayout)
+        ->addWidget(lineEdit)
+        ->addWidget(pushbtn)
+        ->get();
+    QVBoxLayout* vLayout = QChain(new QVBoxLayout)
+        ->addLayout(hLayout)
+        ->addWidget(view)
+        ->get();
+
     return vLayout;
 }
 
@@ -59,5 +69,5 @@ void FWindow::resizeEvent(QResizeEvent* event)
     // ui->view->setFixedSize(width(), height() - 50);
     // ui->view->move(0, 50);
     // ui->lineEdit->setFixedSize(width() - 50, 50);
-    // ui->pushbt->move(width() - 50, 0);
+    // ui->pushbtn->move(width() - 50, 0);
 }
