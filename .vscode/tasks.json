@@ -1,0 +1,24 @@
+{
+    "tasks": [
+        {
+            "label": "ReleaseBuild",
+            "type": "shell",
+            "command": "cmake --build build --config Release",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "preparePacking",
+            "type": "shell",
+            "command": ".\\preparePacking.bat",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "ReleaseBuild"
+        }
+    ],
+    "version": "2.0.0"
+}

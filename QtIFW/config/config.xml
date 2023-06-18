@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>成都信息工程大学区块链学院考试客户端</Name>
+    <Version>1.0.0</Version>
+    <Title>成都信息工程大学区块链学院考试客户端</Title>
+    <Publisher>dsx137</Publisher>
+    <StartMenuDir>CUITExamClient</StartMenuDir>
+    <MaintenanceToolName>卸载</MaintenanceToolName>
+    <TargetDir>@HomeDir@/CUITExamClient</TargetDir>
+    <RunProgram>@TargetDir@/CUITExamClient.exe</RunProgram>
+</Installer>

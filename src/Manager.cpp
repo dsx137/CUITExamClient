@@ -1,10 +1,34 @@
 #include "head/cpphead.h"
 
-void FUNC::screenGrab() {
+Manager::Manager(QObject* p)
+    :QObject(p),
+    w((MainWindow*)p),
+    timer(new QTimer(this)) {
+    initConnection();
+    timer->start(CONFIG->postInterval);
+}
+
+
+void Manager::initConnection() {
+    QObject::connect(timer, &QTimer::timeout, [=] {screenGrab();});
+    // QObject::connect(timer, &QTimer::timeout, &Manager::detectNetworkConnection);
+}
+void Manager::getToken() {
+    w->ui->webView->page()->runJavaScript("localStorage.getItem('CUITAccessToken')", [=](const QVariant& result) {
+        QString token = result.toString();
+        this->token = token;
+        qDebug() << "getToken";
+        });
+}
+
+RETURNCODE Manager::screenGrab() {
+    if (token.isEmpty()) {
+        return RETURNCODE::FAILURE;
+    }
     QScreen* screen = QGuiApplication::primaryScreen();
     if (!screen) {
         qWarning() << "No screen found";
-        return;
+        return RETURNCODE::FAILURE;
     }
 
     // Grab the current screen image
@@ -13,19 +37,24 @@ void FUNC::screenGrab() {
     //send the image to server
     QNetworkAccessManager* manager = new QNetworkAccessManager();
     QNetworkRequest request(QUrl("http://localhost:8000/Img"));
+
     request.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg");
+    request.setRawHeader("x-token", token.toUtf8());
+
     QByteArray data;
     QBuffer buffer(&data);
     buffer.open(QIODevice::WriteOnly);
-    pixmap.save(&buffer, "JPG", 20);
+    pixmap.save(&buffer, "JPG", CONFIG->imgQuality);
     buffer.close();
     manager->post(request, data);
+
+    return RETURNCODE::SUCCESS;
 }
 
-bool FUNC::detectNetworkConnection()
+bool Manager::detectNetworkConnection()
 {
     QStringList targetIPs = {
-        "162.14.117.85",
+        CONFIG->SERVER_IP,
         "127.0.0.1"
     };
     NetstatRunnable* runnable = new NetstatRunnable(targetIPs); // 创建一个NetstatRunnable对象，传入接口名称和目标IP地址
@@ -34,10 +63,10 @@ bool FUNC::detectNetworkConnection()
     return true;
 }
 
-FUNC::NetstatRunnable::NetstatRunnable(const QStringList& targetIPs) // 构造函数，初始化成员变量
+Manager::NetstatRunnable::NetstatRunnable(const QStringList& targetIPs) // 构造函数，初始化成员变量
     : targetIPs(targetIPs) {}
 
-void FUNC::NetstatRunnable::run() {
+void Manager::NetstatRunnable::run() {
     QProcess process; // 创建一个QProcess对象
     process.start("netstat", QStringList() << "-a" << "-n" << "-o" << "-p" << "tcp"); // 执行netstat命令，传入参数
     process.waitForFinished(); // 等待命令执行完成
@@ -64,7 +93,7 @@ void FUNC::NetstatRunnable::run() {
     }
 }
 
-QString FUNC::NetstatRunnable::getProgramName(const QString& pid) {
+QString Manager::NetstatRunnable::getProgramName(const QString& pid) {
     QProcess process;
     process.start("tasklist", QStringList() << "/fi" << QString("PID eq %1").arg(pid));
     process.waitForFinished();
