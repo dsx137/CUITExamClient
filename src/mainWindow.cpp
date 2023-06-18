@@ -1,35 +1,45 @@
 #include "head/cpphead.h"
 
-//FWindow
-FWindow::FWindow(QWidget* p)
+/*-------------MainWindow--------------*/
+
+MainWindow::MainWindow(QWidget* p)
     :QMainWindow(p)
-    , ui(new UI(this)) {
-
+    , ui(new UI(this)),
+    manager(new Manager(this)) {
+    initConnection();
     setCentralWidget(ui);
-
-    QTimer* timer = new QTimer(this);
-    QObject::connect(timer, &QTimer::timeout, &FUNC::screenGrab);
-    QObject::connect(timer, &QTimer::timeout, &FUNC::detectNetworkConnection);
-    timer->start(2000);
 }
-FWindow::~FWindow() {
+MainWindow::~MainWindow() {
+    delete manager;
     delete ui;
 }
-FWindow::UI* FWindow::getUI() {
-    return ui;
+
+void MainWindow::initConnection() {
+
+    QObject::connect(ui->webView, &QWebEngineView::urlChanged, [=](const QUrl& url) {
+        ui->urlBar->setText(url.toString());
+
+        if (url == QUrl("http://162.14.117.85/index"))
+            manager->getToken();
+        });
+
+    //load url when confirmURLButton clicked
+    QObject::connect(ui->confirmURLButton, &QPushButton::clicked, [&] {
+        ui->webView->load(QUrl(ui->urlBar->text()));
+        });
+
 }
 
-//------------------------------------------------------------
+//---------------------------UI------------------------------
 
-//UI
-FWindow::UI::UI(QMainWindow* w)
+
+MainWindow::UI::UI(QMainWindow* w)
     :QWidget(w)
     , w(w) {
     initLayout();
-    initConnection();
 }
 
-void FWindow::UI::initLayout() {
+void MainWindow::UI::initLayout() {
 
     webView = new QWebEngineView;
     webView->load(QUrl("http://162.14.117.85/login"));
@@ -42,7 +52,7 @@ void FWindow::UI::initLayout() {
         ->get();
 
     confirmURLButton = QChain(new QPushButton)
-        ->setFixedSize(50, 50)
+        ->setFixedSize(100, 50)
         ->setText("Refresh")
         ->get();
 
@@ -57,37 +67,4 @@ void FWindow::UI::initLayout() {
         ->addWidget(webView)
         ->get()
     );
-}
-
-void FWindow::UI::initConnection() {
-
-    //set urlBar text
-    QObject::connect(webView, &QWebEngineView::urlChanged, [=](const QUrl& url) {
-        urlBar->setText(url.toString());
-        });
-
-    //get token when loadFinished
-    QObject::connect(webView, &QWebEngineView::loadFinished, [=](bool ok) {
-        if (ok && webView->url() == QUrl("http://162.14.117.85/index")) {
-            webView->page()->runJavaScript("localStorage.getItem('CUITAccessToken')", [=](const QVariant& result) {
-                QString token = result.toString();
-                qDebug() << "Token: " << token;
-                });
-        }
-        });
-
-    //load url when confirmURLButton clicked
-    QObject::connect(confirmURLButton, &QPushButton::clicked, [&] {
-        webView->load(QUrl(urlBar->text()));
-        });
-}
-
-//------------------------------------------------------------
-
-
-//event
-
-void FWindow::resizeEvent(QResizeEvent* event)
-{
-    QMainWindow::resizeEvent(event);
 }

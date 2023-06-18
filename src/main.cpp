@@ -3,7 +3,9 @@
 int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
-    FWindow* w = new FWindow;
+    MainWindow* w = new MainWindow;
+    Updater* updater = new Updater;
+    updater->checkUpdate();
     w->showMaximized();
     return a.exec();
 }

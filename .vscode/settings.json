@@ -101,13 +101,21 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xutility": "cpp",
-        "qnetworkinterface": "cpp"
+        "qnetworkinterface": "cpp",
+        "qhboxlayout": "cpp",
+        "qbuffer": "cpp",
+        "codecvt": "cpp",
+        "filesystem": "cpp",
+        "qjsonobject": "cpp",
+        "qmessagebox": "cpp",
+        "qvboxlayout": "cpp"
     },
     "files.exclude": {
-        "**/.DS_Store": true,
-        "**/.hg": true,
+        "**/.git": true,
         "**/.svn": true,
+        "**/.hg": true,
         "**/CVS": true,
+        "**/.DS_Store": true,
         "**/Thumbs.db": true
     },
     "explorerExclude.backup": {}

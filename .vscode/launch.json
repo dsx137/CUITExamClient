@@ -2,24 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "QtMinGWBuild",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${command:cmake.launchTargetPath}",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceRoot}",
-            "environment": [
-                {
-                    "name": "PATH",
-                    "value": "${env:Qt}/6.4.2/mingw_64/bin"
-                }
-            ],
-            "externalConsole": false,
-            "miDebuggerPath": "${env:Qt}/Tools/mingw1120_64/bin/gdb.exe",
-        },
-        {
-            "name": "QtMSVCBuild",
+            "name": "MSVC_Debug",
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
@@ -33,6 +16,22 @@
                 }
             ],
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Pack",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "binarycreator",
+            "args": [
+                "-c",
+                "config\\config.xml",
+                "-p",
+                "packages",
+                "version.exe"
+            ],
+            "cwd": "${workspaceRoot}\\output",
+            "console": "integratedTerminal",
+            "preLaunchTask": "preparePacking"
         }
     ]
 }
