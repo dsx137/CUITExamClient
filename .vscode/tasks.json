@@ -10,6 +10,16 @@
             }
         },
         {
+            "label": "ReleaseWindeployqt",
+            "type": "shell",
+            "command": "windeployqt .\\build\\Release\\CUITExamClient.exe",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "ReleaseBuild"
+        },
+        {
             "label": "preparePacking",
             "type": "shell",
             "command": ".\\preparePacking.bat",
@@ -17,7 +27,7 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "ReleaseBuild"
+            "dependsOn": "ReleaseWindeployqt"
         }
     ],
     "version": "2.0.0"

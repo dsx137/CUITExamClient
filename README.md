@@ -6,7 +6,7 @@
 
 1. Install Qt 6.4.2 (with MSVC and Qt Installer Framework)
 2. Add environment variable `Qt` like value `C:\Qt`
-3. Add value `F:\Qt\Tools\QtInstallerFramework\4.5\bin` to `Path` environment variable
+3. Add value `F:\Qt\Tools\QtInstallerFramework\4.5\bin` and `F:\Qt\6.4.2\msvc2019_64\bin` to `Path` environment variable
 4. Use Visual Studio Code to open this project
 5. `Ctrl+Shift+P -> CMake: Configure`
 
