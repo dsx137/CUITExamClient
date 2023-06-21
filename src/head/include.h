@@ -26,6 +26,9 @@
 #include <QBuffer>
 #include <QTcpServer>
 #include <QNetworkReply>
+#include <QHttpMultiPart>
+#include <QHttpPart>
+#include <QUrlQuery>
 // #include <QWebEngineScript>
 
 //others

@@ -21,6 +21,7 @@ void MainWindow::initConnection() {
 
         if (url == QUrl("http://162.14.117.85/index"))
             manager->getToken();
+        manager->getPlanId();
         });
 
     //load url when confirmURLButton clicked
