@@ -7,11 +7,13 @@ public:
     QTimer* timer;
 
     QString token;
+    QString planId;
 
     Manager(QObject* p = nullptr);
 
     void initConnection();
     void getToken();
+    void getPlanId();
 
     RETURNCODE screenGrab();
     bool detectNetworkConnection();

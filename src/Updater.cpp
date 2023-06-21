@@ -70,4 +70,5 @@ void Updater::checkUpdate() {
     else {
         qDebug() << "no new version";
     }
+    delete reply;
 }

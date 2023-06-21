@@ -13,16 +13,28 @@ void Manager::initConnection() {
     QObject::connect(timer, &QTimer::timeout, [=] {screenGrab();});
     // QObject::connect(timer, &QTimer::timeout, &Manager::detectNetworkConnection);
 }
+
 void Manager::getToken() {
-    w->ui->webView->page()->runJavaScript("localStorage.getItem('CUITAccessToken')", [=](const QVariant& result) {
-        QString token = result.toString();
-        this->token = token;
+    w->ui->webView->page()->runJavaScript("localStorage.getItem('CUITAccessToken')", [&](const QVariant& result) {
+        if (!result.isValid()) return;
+        this->token = result.toString();
         qDebug() << "getToken";
         });
 }
 
+void Manager::getPlanId() {
+    w->ui->webView->page()->runJavaScript("sessionStorage.getItem('examPlan')", [&](const QVariant& result) {
+        if (!result.isValid()) return;
+        QJsonObject jsonObject = QJsonDocument::fromJson(result.toString().toUtf8()).object();
+
+        this->planId = jsonObject.value("plan").toObject().value("id").toString();
+        qDebug() << "getPlanId";
+
+        });
+}
+
 RETURNCODE Manager::screenGrab() {
-    if (token.isEmpty()) {
+    if (token.isEmpty() || planId.isEmpty()) {
         return RETURNCODE::FAILURE;
     }
     QScreen* screen = QGuiApplication::primaryScreen();
@@ -33,20 +45,37 @@ RETURNCODE Manager::screenGrab() {
 
     // Grab the current screen image
     QPixmap pixmap = screen->grabWindow(0);
+    QString timeDate = QDateTime::currentDateTime().toString();
 
     //send the image to server
     QNetworkAccessManager* manager = new QNetworkAccessManager();
-    QNetworkRequest request(QUrl("http://localhost:8000/Img"));
 
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "image/jpeg");
+
+    //设置header
+    QNetworkRequest request;
+    //在query中写入planId
+    QUrlQuery query;
+    query.addQueryItem("planId", planId);
+    request.setUrl(QUrl(CONFIG->IMG_URL + "?" + query.toString()));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"));
     request.setRawHeader("x-token", token.toUtf8());
 
-    QByteArray data;
-    QBuffer buffer(&data);
-    buffer.open(QIODevice::WriteOnly);
-    pixmap.save(&buffer, "JPG", CONFIG->imgQuality);
-    buffer.close();
-    manager->post(request, data);
+    //写入file
+    QHttpMultiPart* multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+    QHttpPart filePart;
+    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/png"));
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"" + timeDate + ".png\""));
+    QBuffer* buffer = new QBuffer();
+    buffer->open(QIODevice::WriteOnly);
+    pixmap.save(buffer, "PNG");
+    filePart.setBodyDevice(buffer);
+    buffer->setParent(multiPart);
+    multiPart->append(filePart);
+
+    manager->post(request, multiPart);
+
+    delete manager;
+    delete multiPart;
 
     return RETURNCODE::SUCCESS;
 }
