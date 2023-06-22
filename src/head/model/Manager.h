@@ -5,6 +5,7 @@ class Manager : public QObject {
 public:
     MainWindow* w;
     QTimer* timer;
+    QNetworkAccessManager* networkAccessManager;;
 
     QString token;
     QString planId;

@@ -13,7 +13,7 @@ QNetworkReply* Updater::getRequest(const QString& url) {
 
     QEventLoop loop;
     QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    QTimer::singleShot(CONFIG->requestWaitTime, &loop, SLOT(quit()));
+    QTimer::singleShot(Config::requestWaitTime, &loop, SLOT(quit()));
     loop.exec();
 
     if (!reply->isFinished()) {
@@ -27,11 +27,11 @@ QNetworkReply* Updater::getRequest(const QString& url) {
 void Updater::checkUpdate() {
     QString currentPath = QCoreApplication::applicationDirPath();
 
-    QNetworkReply* reply = getRequest(CONFIG->versionCheckURL);
+    QNetworkReply* reply = getRequest(Config::versionCheckURL);
 
     QByteArray data = reply->readAll();
     QString newVersion(data);
-    if (newVersion.toInt() > CONFIG->version.toInt()) {
+    if (newVersion.toInt() > Config::version.toInt()) {
         QMessageBox* updateMsgBox = new QMessageBox(QMessageBox::Information, "更新", "检测到新版本，即将下载安装包……");
 
         QTimer::singleShot(3000, updateMsgBox, SLOT(accept()));
@@ -40,7 +40,7 @@ void Updater::checkUpdate() {
 
         QString timeDate = QString::number(QDateTime::currentMSecsSinceEpoch() / 1000);
 
-        QNetworkReply* reply = getRequest(CONFIG->downloadURLDir + newVersion + ".exe");
+        QNetworkReply* reply = getRequest(Config::downloadURLDir + newVersion + ".exe");
 
         QByteArray data = reply->readAll();
 

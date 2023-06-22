@@ -31,6 +31,12 @@ void MainWindow::initConnection() {
 
 }
 
+void MainWindow::keyPressEvent(QKeyEvent* event) {
+    if (event->key() == Qt::Key_F8) {
+        manager->screenGrab();
+    }
+}
+
 //---------------------------UI------------------------------
 
 

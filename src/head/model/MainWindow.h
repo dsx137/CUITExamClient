@@ -15,6 +15,8 @@ public:
     ~MainWindow();
     void initConnection();
 
+    //按F8触发screenGrab
+    void keyPressEvent(QKeyEvent* event) override;
 };
 
 class MainWindow::UI :public QWidget {

@@ -108,7 +108,8 @@
         "filesystem": "cpp",
         "qjsonobject": "cpp",
         "qmessagebox": "cpp",
-        "qvboxlayout": "cpp"
+        "qvboxlayout": "cpp",
+        "iostream": "cpp"
     },
     "files.exclude": {
         "**/.git": true,
