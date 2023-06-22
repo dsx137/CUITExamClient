@@ -1,19 +1,23 @@
 #!/usr/bin/env ruby
  
 require 'webrick'
-require "base64"
+
 
 Dir.chdir(File.dirname(__FILE__))
 
 class Post < WEBrick::HTTPServlet::AbstractServlet
   def do_POST(request, response)
-    image = request.body
-    # image_data = Base64.decode64(image)
-
-    File.open("./image.jpg", "wb") do |f|
+    data = request.body
+    # get file from multipart form data
+    image = data[/filename="(.*)"/m, 1]
+    image = data[/\r\n\r\n(.*)\z/m, 1]
+   
+    
+    File.open("./image.png", "wb") do |f|
     f.write(image)
     f.close
     end
+    
     
     # set the response status and content type
     response.status = 200

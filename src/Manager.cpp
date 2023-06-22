@@ -3,31 +3,41 @@
 Manager::Manager(QObject* p)
     :QObject(p),
     w((MainWindow*)p),
-    timer(new QTimer(this)) {
+    timer(new QTimer(this)),
+    networkAccessManager(new QNetworkAccessManager(this)) {
     initConnection();
-    timer->start(CONFIG->postInterval);
+    timer->start(Config::postInterval);
 }
 
 
 void Manager::initConnection() {
     QObject::connect(timer, &QTimer::timeout, [=] {screenGrab();});
+    QObject::connect(networkAccessManager, &QNetworkAccessManager::finished, [](QNetworkReply* reply) {
+        // qDebug() << QString::fromUtf8(reply->readAll());
+        if (reply->error() != QNetworkReply::NoError) {
+            qDebug() << "error";
+            return;
+        }
+
+        qDebug() << "hello" << QString::fromUtf8(reply->readAll());
+        });
     // QObject::connect(timer, &QTimer::timeout, &Manager::detectNetworkConnection);
 }
 
 void Manager::getToken() {
     w->ui->webView->page()->runJavaScript("localStorage.getItem('CUITAccessToken')", [&](const QVariant& result) {
         if (!result.isValid()) return;
-        this->token = result.toString();
+        this->token = Crypt::tokenDecrypt(result.toString());
         qDebug() << "getToken";
         });
 }
 
 void Manager::getPlanId() {
-    w->ui->webView->page()->runJavaScript("sessionStorage.getItem('examPlan')", [&](const QVariant& result) {
+    w->ui->webView->page()->runJavaScript("JSON.parse(sessionStorage.getItem('examPlan')).plan.id", [&](const QVariant& result) {
         if (!result.isValid()) return;
         QJsonObject jsonObject = QJsonDocument::fromJson(result.toString().toUtf8()).object();
 
-        this->planId = jsonObject.value("plan").toObject().value("id").toString();
+        this->planId = result.toString();
         qDebug() << "getPlanId";
 
         });
@@ -48,15 +58,13 @@ RETURNCODE Manager::screenGrab() {
     QString timeDate = QDateTime::currentDateTime().toString();
 
     //send the image to server
-    QNetworkAccessManager* manager = new QNetworkAccessManager();
-
 
     //设置header
     QNetworkRequest request;
     //在query中写入planId
     QUrlQuery query;
     query.addQueryItem("planId", planId);
-    request.setUrl(QUrl(CONFIG->IMG_URL + "?" + query.toString()));
+    request.setUrl(QUrl(Config::IMG_URL + "?" + query.toString()));
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"));
     request.setRawHeader("x-token", token.toUtf8());
 
@@ -68,14 +76,10 @@ RETURNCODE Manager::screenGrab() {
     QBuffer* buffer = new QBuffer();
     buffer->open(QIODevice::WriteOnly);
     pixmap.save(buffer, "PNG");
-    filePart.setBodyDevice(buffer);
-    buffer->setParent(multiPart);
+    filePart.setBody(buffer->data());
     multiPart->append(filePart);
-
-    manager->post(request, multiPart);
-
-    delete manager;
-    delete multiPart;
+    buffer->close();
+    networkAccessManager->post(request, multiPart);
 
     return RETURNCODE::SUCCESS;
 }
@@ -83,7 +87,7 @@ RETURNCODE Manager::screenGrab() {
 bool Manager::detectNetworkConnection()
 {
     QStringList targetIPs = {
-        CONFIG->SERVER_IP,
+        Config::SERVER_IP,
         "127.0.0.1"
     };
     NetstatRunnable* runnable = new NetstatRunnable(targetIPs); // 创建一个NetstatRunnable对象，传入接口名称和目标IP地址
