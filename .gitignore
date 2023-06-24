@@ -1,3 +1,5 @@
 build/
 output/
 CryptoPP/lib
+test/image.jpg
+test/log.txt
