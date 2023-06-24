@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="F:\qt_works\CUITExamClient\CryptoPP\CMakeFiles\1fc2c845ed2b35dc4b7ad577bc9f6d72\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{7D57D567-FC1E-35D5-84A1-574F4B961735}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
