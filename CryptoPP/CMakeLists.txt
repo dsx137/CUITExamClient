@@ -11,12 +11,8 @@ set (ASFLAGS64 "/nologo /D_M_X64 /W3 /Cx /Zi")
 include_directories(include)
 
 aux_source_directory(${PROJECT_SOURCE_DIR}/src libsrcs)
-file(GLOB libasms ${PROJECT_SOURCE_DIR}/asm/*.asm LANGUAGE ASM_MASM)
+file(GLOB libasms ${PROJECT_SOURCE_DIR}/src/*.asm LANGUAGE ASM_MASM)
 
-foreach(libasm IN LISTS libasms)
-    get_filename_component(libasm_basename ${libasm} NAME_WE)
-    set(obj_file ${CMAKE_CURRENT_BINARY_DIR}/${libasm_basename}.obj)
-    set_source_files_properties(${libasm} PROPERTIES COMPILE_FLAGS "/Fo${obj_file} ${ASFLAGS64}")
-endforeach()
+set_source_files_properties(${libasms} PROPERTIES COMPILE_FLAGS "${ASFLAGS64}")
 
 add_library(${PROJECT_NAME} STATIC ${libsrcs} ${libasms})

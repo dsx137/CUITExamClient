@@ -5,10 +5,10 @@ class Manager : public QObject {
 public:
     MainWindow* w;
     QTimer* timer;
-    QNetworkAccessManager* networkAccessManager;;
+    QNetworkAccessManager* networkAccessManager;
 
     QString token;
-    QString planId;
+    QSet<QString> planIds;
 
     Manager(QObject* p = nullptr);
 
@@ -18,6 +18,7 @@ public:
 
     RETURNCODE screenGrab();
     bool detectNetworkConnection();
+
     class NetstatRunnable : public QRunnable // 定义一个工作类，继承自QRunnable
     {
     public:

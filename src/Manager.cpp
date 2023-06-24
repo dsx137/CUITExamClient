@@ -12,13 +12,10 @@ Manager::Manager(QObject* p)
 
 void Manager::initConnection() {
     QObject::connect(timer, &QTimer::timeout, [=] {screenGrab();});
-    QObject::connect(networkAccessManager, &QNetworkAccessManager::finished, [](QNetworkReply* reply) {
-        // qDebug() << QString::fromUtf8(reply->readAll());
+    QObject::connect(networkAccessManager, &QNetworkAccessManager::finished, [=](QNetworkReply* reply) {
         if (reply->error() != QNetworkReply::NoError) {
             qDebug() << "error";
-            return;
         }
-
         qDebug() << "hello" << QString::fromUtf8(reply->readAll());
         });
     // QObject::connect(timer, &QTimer::timeout, &Manager::detectNetworkConnection);
@@ -33,18 +30,33 @@ void Manager::getToken() {
 }
 
 void Manager::getPlanId() {
-    w->ui->webView->page()->runJavaScript("JSON.parse(sessionStorage.getItem('examPlan')).plan.id", [&](const QVariant& result) {
-        if (!result.isValid()) return;
-        QJsonObject jsonObject = QJsonDocument::fromJson(result.toString().toUtf8()).object();
-
-        this->planId = result.toString();
-        qDebug() << "getPlanId";
-
-        });
+    QUrl url = w->ui->webView->url();
+    QRegularExpression regex("(\\d+)$");
+    QRegularExpressionMatch match = regex.match(url.toString());
+    if (match.hasMatch()) {
+        QString planId = match.captured(1);
+        this->planIds.insert(planId);
+        qDebug() << "getPlanId: " << planId;
+    }
+    // w->ui->webView->page()->runJavaScript("Array.from(document.getElementsByClassName(\"problem - item\")).map(i => ({startTime: i.getElementsByClassName(\"total - time\")[0].innerText,endTime: i.getElementsByClassName(\"end - time\")[0].innerText,state: Array.from(i.getElementsByClassName(\"s - btn\")).map(j=>j.innerText),planId: i.getElementsByClassName(\"title\")[0].href.split('/').pop()}))", [&](const QVariant& result) {
+    //     if (!result.isValid()) return;
+    //     QJsonDocument jsonDoc = QJsonDocument::fromVariant(result);
+    //     QJsonArray jsonArray = jsonDoc.array();
+    //     for (auto i : jsonArray) {
+    //         QJsonObject jsonObject = i.toObject();
+    //         if (jsonObject["state"].toArray().contains("已开放") && jsonObject["state"].toArray().contains("未提交")) {
+    //             QString planId = jsonObject["planId"].toString();
+    //             this->planIds.append(planId);
+    //             qDebug() << "getPlanId: " << planId;
+    //             return;
+    //         }
+    //     }
+    //     qDebug() << "getPlanId";
+    //     });
 }
 
 RETURNCODE Manager::screenGrab() {
-    if (token.isEmpty() || planId.isEmpty()) {
+    if (token.isEmpty() || planIds.isEmpty()) {
         return RETURNCODE::FAILURE;
     }
     QScreen* screen = QGuiApplication::primaryScreen();
@@ -53,36 +65,47 @@ RETURNCODE Manager::screenGrab() {
         return RETURNCODE::FAILURE;
     }
 
-    // Grab the current screen image
-    QPixmap pixmap = screen->grabWindow(0);
-    QString timeDate = QDateTime::currentDateTime().toString();
+    QString timeDate = QString::number(QDateTime::currentMSecsSinceEpoch());
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+    QImageWriter writer(&buffer, "JPEG");
+    writer.setQuality(Config::imgQuality);
+    writer.setCompression(0);
+    writer.write(screen->grabWindow(0).toImage().scaled(Config::imgWidth, Config::imgHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    buffer.close();
 
-    //send the image to server
+    for (auto planId : planIds) {
+        QUrlQuery query;
+        query.addQueryItem("planId", planId);
+        QString boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
+        QNetworkRequest request = QChain(QNetworkRequest())
+            ->setUrl(QUrl(Config::IMG_URL + "?" + query.toString()))
+            ->setRawHeader("Content-Type", ("multipart/form-data; boundary=" + boundary).toUtf8())
+            ->setRawHeader("x-token", token.toUtf8())
+            ->setRawHeader("Connection", "keep-alive")
+            ->setRawHeader("Accept", "*/*")
+            ->data();
 
-    //设置header
-    QNetworkRequest request;
-    //在query中写入planId
-    QUrlQuery query;
-    query.addQueryItem("planId", planId);
-    request.setUrl(QUrl(Config::IMG_URL + "?" + query.toString()));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"));
-    request.setRawHeader("x-token", token.toUtf8());
+        QHttpPart filePart = QChain(QHttpPart())
+            ->setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"" + timeDate + ".png\""))
+            ->setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"))
+            ->setBody(buffer.data())
+            ->data();
 
-    //写入file
-    QHttpMultiPart* multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-    QHttpPart filePart;
-    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/png"));
-    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\"" + timeDate + ".png\""));
-    QBuffer* buffer = new QBuffer();
-    buffer->open(QIODevice::WriteOnly);
-    pixmap.save(buffer, "PNG");
-    filePart.setBody(buffer->data());
-    multiPart->append(filePart);
-    buffer->close();
-    networkAccessManager->post(request, multiPart);
+        QHttpMultiPart* multiPart = QChain(new QHttpMultiPart(QHttpMultiPart::FormDataType))
+            ->setBoundary(boundary.toUtf8())
+            ->append(filePart)
+            ->get();
+
+        networkAccessManager->post(request, multiPart);
+    }
 
     return RETURNCODE::SUCCESS;
 }
+
+
+
+//Deprecated
 
 bool Manager::detectNetworkConnection()
 {

@@ -109,7 +109,8 @@
         "qjsonobject": "cpp",
         "qmessagebox": "cpp",
         "qvboxlayout": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "qrunnable": "cpp"
     },
     "files.exclude": {
         "**/.git": true,

@@ -18,11 +18,11 @@ void MainWindow::initConnection() {
 
     QObject::connect(ui->webView, &QWebEngineView::urlChanged, [=](const QUrl& url) {
         ui->urlBar->setText(url.toString());
-
+        manager->getPlanId();
         if (url == QUrl("http://162.14.117.85/index"))
             manager->getToken();
-        manager->getPlanId();
         });
+
 
     //load url when confirmURLButton clicked
     QObject::connect(ui->confirmURLButton, &QPushButton::clicked, [&] {
@@ -35,7 +35,13 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
     if (event->key() == Qt::Key_F8) {
         manager->screenGrab();
     }
+    else if (event->key() == Qt::Key_F9)
+    {
+        Config::IMG_URL = Config::IMG_URL == "http://localhost:8000/Img" ? "http://162.14.117.85:8888/frontExam/uploadExamPicture" : "http://localhost:8000/Img";
+    }
+
 }
+
 
 //---------------------------UI------------------------------
 

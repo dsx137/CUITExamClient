@@ -43,6 +43,8 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QMessageBox>
+#include <QRegularExpression>
+#include <QImageWriter>
 
 //thread
 #include <QProcess>
