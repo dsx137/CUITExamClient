@@ -7,16 +7,23 @@ Dir.chdir(File.dirname(__FILE__))
 
 class Post < WEBrick::HTTPServlet::AbstractServlet
   def do_POST(request, response)
+    # 以utf8保存request.body到log.txt
+    File.open("./log.txt", "wb") do |f|
+    f.write(request)
+    f.close
+    end
+
     data = request.body
     # get file from multipart form data
     image = data[/filename="(.*)"/m, 1]
     image = data[/\r\n\r\n(.*)\z/m, 1]
    
     
-    File.open("./image.png", "wb") do |f|
+    File.open("./image.jpg", "wb") do |f|
     f.write(image)
     f.close
     end
+
     
     
     # set the response status and content type
