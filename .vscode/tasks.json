@@ -12,7 +12,7 @@
         {
             "label": "ReleaseWindeployqt",
             "type": "shell",
-            "command": "windeployqt .\\build\\Release\\CUITExamClient.exe",
+            "command": "${env:Qt}/6.4.2/msvc2019_64/bin/windeployqt.exe .\\build\\Release\\CUITExamClient.exe",
             "group": {
                 "kind": "build",
                 "isDefault": true
