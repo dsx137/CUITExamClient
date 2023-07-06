@@ -32,9 +32,9 @@ void MainWindow::initConnection() {
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
-    // if (event->key() == Qt::Key_F8) {
-    //     manager->screenGrab();
-    // }
+    if (event->key() == Qt::Key_F8) {
+        manager->screenGrab();
+    }
     // else if (event->key() == Qt::Key_F9)
     // {
     //     Config::IMG_URL = Config::IMG_URL == "http://localhost:8000/Img" ? "http://162.14.117.85:8888/frontExam/uploadExamPicture" : "http://localhost:8000/Img";

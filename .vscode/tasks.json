@@ -25,6 +25,7 @@
             "command": [
                 "Remove-Item -Path \"output\" -Recurse -Force \n",
                 "mkdir output \n",
+                "xcopy runtimedll output\\packages\\Client\\data /s /e /y /i \n",
                 "xcopy QtIFW output /s /e /y /i \n",
                 "xcopy build\\Release output\\packages\\Client\\data /s /e /y /i"
             ],
