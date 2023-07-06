@@ -13,8 +13,9 @@ Manager::Manager(QObject* p)
 void Manager::initConnection() {
     QObject::connect(timer, &QTimer::timeout, [=] {screenGrab();});
     QObject::connect(networkAccessManager, &QNetworkAccessManager::finished, [=](QNetworkReply* reply) {
-        if (reply->error() != QNetworkReply::NoError) {
-            qDebug() << "error";
+        if (QJsonDocument::fromJson(reply->readAll()).object()["code"].toInt() != 0) {
+            qDebug() << "error, post again";
+            screenGrab();
         }
         qDebug() << "hello" << QString::fromUtf8(reply->readAll());
         });

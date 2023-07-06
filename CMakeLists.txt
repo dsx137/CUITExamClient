@@ -23,7 +23,7 @@ qt_standard_project_setup()
 add_subdirectory(CryptoPP)
 
 add_executable(${PROJECT_NAME}
-    WIN32 # If you need a terminal for debug, please comment this statement 
+   WIN32 # If you need a terminal for debug, please comment this statement 
     ${srcs} 
 ) 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Widgets Qt6::WebEngineWidgets Qt6::Network CryptoPP) # 用了什么额外的lib就要在这里写
